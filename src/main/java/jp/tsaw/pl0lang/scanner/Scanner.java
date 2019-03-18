@@ -28,7 +28,7 @@ public class Scanner {
     }
 
     public Token getToken() {
-        StringBuilder valueBuffer = new StringBuilder();
+        StringBuilder valueBuilder = new StringBuilder();
         try {
             while (Character.isSpaceChar(readedChar)) {
                 readedChar = reader.read();
@@ -46,54 +46,50 @@ public class Scanner {
                     || readedChar == Character.hashCode('(')
                     || readedChar == Character.hashCode(')')
                     || readedChar == Character.hashCode('=')) {
-                String symbolValue = String.valueOf((char) readedChar);
-                readedChar = reader.read();
-                return Token.getLiteralToken(symbolValue);
+                appendAndRead(valueBuilder);
+                return Token.getLiteralToken(valueBuilder.toString());
             }
             if (readedChar == Character.hashCode(':')
                     || readedChar == Character.hashCode('!')) {
-                valueBuffer.append((char)readedChar);
-                readedChar = reader.read();
+                appendAndRead(valueBuilder);
                 if (readedChar != Character.hashCode('=')) {
                     return Token.getNull(); // 本来は受理できないので別扱いにすべき
                 }
-                valueBuffer.append((char)readedChar);
-                readedChar = reader.read();
-                return Token.getLiteralToken(valueBuffer.toString());
+                appendAndRead(valueBuilder);
+                return Token.getLiteralToken(valueBuilder.toString());
             }
             if (readedChar == Character.hashCode('>')
                     || readedChar == Character.hashCode('<')) {
-                valueBuffer.append((char)readedChar);
-                readedChar = reader.read();
+                appendAndRead(valueBuilder);
                 if (readedChar != Character.hashCode('=')) {
-                    return Token.getLiteralToken(valueBuffer.toString());
+                    return Token.getLiteralToken(valueBuilder.toString());
                 } else {
-                    valueBuffer.append((char) readedChar);
-                    readedChar = reader.read();
-                    return Token.getLiteralToken(valueBuffer.toString());
+                    appendAndRead(valueBuilder);
+                    return Token.getLiteralToken(valueBuilder.toString());
                 }
             }
             if (Character.isLetter(readedChar)) {
-                valueBuffer.append((char) readedChar);
-                readedChar = reader.read();
+                appendAndRead(valueBuilder);
                 while (Character.isLetterOrDigit(readedChar)) {
-                    valueBuffer.append((char) readedChar);
-                    readedChar = reader.read();
+                    appendAndRead(valueBuilder);
                 }
-                String value = valueBuffer.toString();
+                String value = valueBuilder.toString();
                 return Token.getLiteralToken(value);
             } else if (Character.isDigit(readedChar)) {
-                valueBuffer.append((char) readedChar);
-                readedChar = reader.read();
+                appendAndRead(valueBuilder);
                 while (Character.isDigit(readedChar)) {
-                    valueBuffer.append((char) readedChar);
-                    readedChar = reader.read();
+                    appendAndRead(valueBuilder);
                 }
-                return Token.getNumber(valueBuffer.toString());
+                return Token.getNumber(valueBuilder.toString());
             }
         } catch (IOException e) {
             throw new ScannerException(e);
         }
         return Token.getNull();
+    }
+
+    private void appendAndRead(StringBuilder builder) throws IOException {
+        builder.append((char)readedChar);
+        readedChar = reader.read();
     }
 }
