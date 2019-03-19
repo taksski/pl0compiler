@@ -4,11 +4,14 @@ import jp.tsaw.pl0lang.scanner.token.Token;
 import org.junit.jupiter.api.Test;
 
 import jp.tsaw.pl0lang.scanner.Scanner;
+import jp.tsaw.pl0lang.scanner.ScannerInitializeException;
 
 import java.io.StringReader;
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ScannerTest {
 
@@ -30,6 +33,14 @@ class ScannerTest {
         token = scanner.getToken();
         assertEquals(Token.Type.IDENT, token.getType());
         assertEquals("abc", token.getValue());
+    }
+
+    @Test
+    void catchScannerInitializeException() {
+        StringReader reader = new StringReader("");
+        reader.close();
+        assertThrows(ScannerInitializeException.class,
+                () -> Scanner.getInstance(reader));
     }
 
     @Test
