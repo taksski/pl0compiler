@@ -14,10 +14,14 @@ public class Scanner {
     /* 先読みした文字を保持 */
     private int readedChar;
 
+    /* Token を保持 */
+    private Token token;
+
     private Scanner(Reader reader) {
         try {
             this.reader = reader;
             this.readedChar = reader.read();
+            this.token = Token.getNull();
         } catch (IOException e) {
             throw new ScannerInitializeException(e);
         }
@@ -28,13 +32,17 @@ public class Scanner {
     }
 
     public Token getToken() {
+        return token;
+    }
+
+    public Token read() {
         StringBuilder valueBuilder = new StringBuilder();
         try {
             while (Character.isSpaceChar(readedChar)) {
                 readedChar = reader.read();
             }
             if (readedChar == EOF) {
-                return Token.getNull();
+                token = Token.getNull();
             }
             if (readedChar == Character.hashCode('+')
                     || readedChar == Character.hashCode('-')
@@ -47,25 +55,25 @@ public class Scanner {
                     || readedChar == Character.hashCode(')')
                     || readedChar == Character.hashCode('=')) {
                 appendAndRead(valueBuilder);
-                return Token.getLiteralToken(valueBuilder.toString());
+                token = Token.getLiteralToken(valueBuilder.toString());
             }
             if (readedChar == Character.hashCode(':')
                     || readedChar == Character.hashCode('!')) {
                 appendAndRead(valueBuilder);
                 if (readedChar != Character.hashCode('=')) {
-                    return Token.getNull(); // 本来は受理できないので別扱いにすべき
+                    token = Token.getNull(); // 本来は受理できないので別扱いにすべき
                 }
                 appendAndRead(valueBuilder);
-                return Token.getLiteralToken(valueBuilder.toString());
+                token = Token.getLiteralToken(valueBuilder.toString());
             }
             if (readedChar == Character.hashCode('>')
                     || readedChar == Character.hashCode('<')) {
                 appendAndRead(valueBuilder);
                 if (readedChar != Character.hashCode('=')) {
-                    return Token.getLiteralToken(valueBuilder.toString());
+                    token = Token.getLiteralToken(valueBuilder.toString());
                 } else {
                     appendAndRead(valueBuilder);
-                    return Token.getLiteralToken(valueBuilder.toString());
+                    token = Token.getLiteralToken(valueBuilder.toString());
                 }
             }
             if (Character.isLetter(readedChar)) {
@@ -74,18 +82,18 @@ public class Scanner {
                     appendAndRead(valueBuilder);
                 }
                 String value = valueBuilder.toString();
-                return Token.getLiteralToken(value);
+                token = Token.getLiteralToken(value);
             } else if (Character.isDigit(readedChar)) {
                 appendAndRead(valueBuilder);
                 while (Character.isDigit(readedChar)) {
                     appendAndRead(valueBuilder);
                 }
-                return Token.getNumber(valueBuilder.toString());
+                token = Token.getNumber(valueBuilder.toString());
             }
         } catch (IOException e) {
             throw new ScannerException(e);
         }
-        return Token.getNull();
+        return token;
     }
 
     private void appendAndRead(StringBuilder builder) throws IOException {

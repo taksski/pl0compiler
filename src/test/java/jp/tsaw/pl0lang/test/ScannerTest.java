@@ -11,28 +11,16 @@ import java.util.Map;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ScannerTest {
 
     @Test
-    void emptyScanner() {
+    void initialScannerState() {
         Scanner scanner = Scanner.getInstance(new StringReader(""));
         Token token = scanner.getToken();
         assertEquals(Token.Type.NULL, token.getType());
-    }
-
-    @Test
-    void getIdent() {
-        Scanner scanner = Scanner.getInstance(new StringReader("abc"));
-        Token token = scanner.getToken();
-        assertEquals(Token.Type.IDENT, token.getType());
-        assertEquals("abc", token.getValue());
-
-        scanner = Scanner.getInstance(new StringReader("  abc"));
-        token = scanner.getToken();
-        assertEquals(Token.Type.IDENT, token.getType());
-        assertEquals("abc", token.getValue());
     }
 
     @Test
@@ -44,9 +32,25 @@ class ScannerTest {
     }
 
     @Test
+    void getIdent() {
+        Scanner scanner = Scanner.getInstance(new StringReader("abc"));
+        Token token = scanner.read();
+        assertEquals(Token.Type.IDENT, token.getType());
+        assertEquals("abc", token.getValue());
+
+        Token other = scanner.getToken();
+        assertSame(token, other);
+
+        scanner = Scanner.getInstance(new StringReader("  abc"));
+        token = scanner.read();
+        assertEquals(Token.Type.IDENT, token.getType());
+        assertEquals("abc", token.getValue());
+    }
+
+    @Test
     void getDigit() {
         Scanner scanner = Scanner.getInstance(new StringReader("12345"));
-        Token token = scanner.getToken();
+        Token token = scanner.read();
         assertEquals(Token.Type.NUMBER, token.getType());
         assertEquals("12345", token.getValue());
     }
@@ -87,7 +91,7 @@ class ScannerTest {
         for (String word: reservedWords.keySet()) {
             Token.Type expected = reservedWords.get(word);
             Scanner scanner = Scanner.getInstance(new StringReader(word));
-            Token token = scanner.getToken();
+            Token token = scanner.read();
             String message = "expect: " + word;
             assertEquals(expected, token.getType(), message);
         }
@@ -96,17 +100,17 @@ class ScannerTest {
     @Test
     void getMultipleTokens() {
         Scanner scanner = Scanner.getInstance(new StringReader("var a := 1;"));
-        Token token = scanner.getToken();
+        Token token = scanner.read();
         assertEquals(Token.Type.VAR, token.getType());
-        token = scanner.getToken();
+        token = scanner.read();
         assertEquals(Token.Type.IDENT, token.getType());
         assertEquals("a", token.getValue());
-        token = scanner.getToken();
+        token = scanner.read();
         assertEquals(Token.Type.BECOMES, token.getType());
-        token = scanner.getToken();
+        token = scanner.read();
         assertEquals(Token.Type.NUMBER, token.getType());
         assertEquals("1", token.getValue());
-        token = scanner.getToken();
+        token = scanner.read();
         assertEquals(Token.Type.SEMICOLON, token.getType());
     }
 }
