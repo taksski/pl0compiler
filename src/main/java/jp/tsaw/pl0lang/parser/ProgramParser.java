@@ -6,18 +6,24 @@ import jp.tsaw.pl0lang.scanner.token.Token;
 public class ProgramParser {
 
     private Scanner scanner;
-    private Token readedToken;
 
     private ProgramParser(Scanner scanner) {
         this.scanner = scanner;
-        readedToken = null;
     }
 
     public static ProgramParser getInstance(Scanner scanner) {
         return new ProgramParser(scanner);
     }
 
-    public String parse(Token token) {
+    public String parse() {
+        scanner.read();
+        String result = BlockParser.getInstance(scanner).parse();
+        if (result.equals("accept")){
+            Token token = scanner.read();
+            if (token.getType() == Token.Type.PERIOD) {
+                return "accept";
+            }
+        }
         return "parse error!";
     }
 }
