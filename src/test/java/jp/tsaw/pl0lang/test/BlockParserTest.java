@@ -1,7 +1,10 @@
 package jp.tsaw.pl0lang.test;
 
+import jp.tsaw.pl0lang.parser.AbstractParser;
 import jp.tsaw.pl0lang.parser.BlockParser;
 import jp.tsaw.pl0lang.scanner.Scanner;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
@@ -29,7 +32,7 @@ class BlockParserTest {
             scanner.read();
             BlockParser parser = BlockParser.getInstance(scanner);
             String result = parser.parse();
-            assertEquals("accept", result, "test statement: "+statement);
+            assertEquals(AbstractParser.ACCEPT, result, "test statement: "+statement);
         }
     }
 
@@ -46,7 +49,7 @@ class BlockParserTest {
             scanner.read();
             BlockParser parser = BlockParser.getInstance(scanner);
             String result = parser.parse();
-            assertEquals("parse error!", result, "test statement: "+error);
+            assertEquals(AbstractParser.ERROR, result, "test statement: "+error);
         }
     }
 
@@ -57,7 +60,7 @@ class BlockParserTest {
         scanner.read();
         BlockParser parser = BlockParser.getInstance(scanner);
         String result = parser.parse();
-        assertEquals("accept", result);
+        assertEquals(AbstractParser.ACCEPT, result);
     }
 
     @Test
@@ -74,5 +77,15 @@ class BlockParserTest {
             String result = parser.parse();
             assertEquals("parse error!", result, "statement: "+error);
         }
+    }
+
+    @Disabled
+    void acceptProcedureBlock() {
+        String statement = "procedure sample; var a; begin a := 1; end;"; // simple procedure;
+        Scanner scanner = Scanner.getInstance(new StringReader(statement));
+        scanner.read();
+        BlockParser parser = BlockParser.getInstance(scanner);
+        String result = parser.parse();
+        assertEquals("accept",result);
     }
 }

@@ -3,27 +3,27 @@ package jp.tsaw.pl0lang.parser;
 import jp.tsaw.pl0lang.scanner.Scanner;
 import jp.tsaw.pl0lang.scanner.token.Token;
 
-public class ProgramParser {
-
-    private Scanner scanner;
+public class ProgramParser extends AbstractParser {
 
     private ProgramParser(Scanner scanner) {
-        this.scanner = scanner;
+        super(scanner);
     }
 
     public static ProgramParser getInstance(Scanner scanner) {
         return new ProgramParser(scanner);
     }
 
+    @Override
     public String parse() {
-        scanner.read();
         String result = BlockParser.getInstance(scanner).parse();
-        if (result.equals("accept")){
-            Token token = scanner.read();
-            if (token.getType() == Token.Type.PERIOD) {
-                return "accept";
+        if (result.equals(ACCEPT)){
+            Token token = scanner.getToken();
+            if (token.getType() != Token.Type.PERIOD) {
+                return ERROR;
             }
+        } else {
+            return ERROR;
         }
-        return "parse error!";
+        return ACCEPT;
     }
 }
