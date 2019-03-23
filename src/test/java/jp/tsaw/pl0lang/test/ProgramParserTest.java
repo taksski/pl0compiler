@@ -16,7 +16,7 @@ class ProgramParserTest {
     @Test
     void createProgramParser() {
         Scanner scanner = Scanner.getInstance(new StringReader(""));
-        ProgramParser.getInstance(scanner);
+        ProgramParser.getInstance();
         assertTrue(true);
     }
 
@@ -24,7 +24,7 @@ class ProgramParserTest {
     void emptyProgram() {
         Scanner scanner = Scanner.getInstance(new StringReader("."));
         scanner.read();
-        ProgramParser parser = ProgramParser.getInstance(scanner);
-        assertEquals(AbstractParser.ACCEPT, parser.parse());
+        ProgramParser parser = ProgramParser.getInstance();
+        assertEquals(AbstractParser.ACCEPT, parser.parse(scanner));
     }
 }

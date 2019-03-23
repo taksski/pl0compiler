@@ -15,7 +15,31 @@ class StatementParserTest {
     void acceptEmptyStatement() {
         Scanner scanner = Scanner.getInstance(new StringReader(""));
         scanner.read();
-        StatementParser parser = StatementParser.getInstance(scanner);
-        assertEquals(AbstractParser.ACCEPT, parser.parse());
+        StatementParser parser = StatementParser.getInstance();
+        assertEquals(AbstractParser.ACCEPT, parser.parse(scanner));
+    }
+
+    @Test
+    void acceptAssignStatement() {
+        Scanner scanner = Scanner.getInstance(new StringReader("a := 1"));
+        scanner.read();
+        StatementParser parser = StatementParser.getInstance();
+        assertEquals(AbstractParser.ACCEPT, parser.parse(scanner));
+    }
+
+    @Test
+    void acceptCallStatement() {
+        Scanner scanner = Scanner.getInstance(new StringReader("call test"));
+        scanner.read();
+        StatementParser parser = StatementParser.getInstance();
+        assertEquals(AbstractParser.ACCEPT, parser.parse(scanner));
+    }
+
+    @Test
+    void errrorCallStatement() {
+        Scanner scanner = Scanner.getInstance(new StringReader("call 123")); // number is not acceptable.
+        scanner.read();
+        StatementParser parser = StatementParser.getInstance();
+        assertEquals(AbstractParser.ERROR, parser.parse(scanner));
     }
 }

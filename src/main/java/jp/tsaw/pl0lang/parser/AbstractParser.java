@@ -7,11 +7,5 @@ public abstract class AbstractParser {
     public static String ACCEPT = "accept";
     public static String ERROR = "parse error!";
 
-    protected Scanner scanner;
-
-    AbstractParser(Scanner scanner) {
-        this.scanner = scanner;
-    }
-
-    abstract public String parse();
+    abstract public String parse(Scanner scanner);
 }

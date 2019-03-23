@@ -16,8 +16,7 @@ class BlockParserTest {
 
     @Test
     void createBlockParser() {
-        Scanner scanner = Scanner.getInstance(new StringReader(""));
-        BlockParser.getInstance(scanner);
+        BlockParser.getInstance();
         assertTrue(true);
     }
 
@@ -30,8 +29,8 @@ class BlockParserTest {
         for (String statement: statements) {
             Scanner scanner = Scanner.getInstance(new StringReader(statement));
             scanner.read();
-            BlockParser parser = BlockParser.getInstance(scanner);
-            String result = parser.parse();
+            BlockParser parser = BlockParser.getInstance();
+            String result = parser.parse(scanner);
             assertEquals(AbstractParser.ACCEPT, result, "test statement: "+statement);
         }
     }
@@ -47,8 +46,8 @@ class BlockParserTest {
         for (String error: errors) {
             Scanner scanner = Scanner.getInstance(new StringReader(error));
             scanner.read();
-            BlockParser parser = BlockParser.getInstance(scanner);
-            String result = parser.parse();
+            BlockParser parser = BlockParser.getInstance();
+            String result = parser.parse(scanner);
             assertEquals(AbstractParser.ERROR, result, "test statement: "+error);
         }
     }
@@ -58,8 +57,8 @@ class BlockParserTest {
         String statement = "var a, b, c;";
         Scanner scanner = Scanner.getInstance(new StringReader(statement));
         scanner.read();
-        BlockParser parser = BlockParser.getInstance(scanner);
-        String result = parser.parse();
+        BlockParser parser = BlockParser.getInstance();
+        String result = parser.parse(scanner);
         assertEquals(AbstractParser.ACCEPT, result);
     }
 
@@ -73,8 +72,8 @@ class BlockParserTest {
         for (String error : errors) {
             Scanner scanner = Scanner.getInstance(new StringReader(error));
             scanner.read();
-            BlockParser parser = BlockParser.getInstance(scanner);
-            String result = parser.parse();
+            BlockParser parser = BlockParser.getInstance();
+            String result = parser.parse(scanner);
             assertEquals("parse error!", result, "statement: "+error);
         }
     }
@@ -84,8 +83,8 @@ class BlockParserTest {
         String statement = "procedure sample; var a; begin a := 1; end;"; // simple procedure;
         Scanner scanner = Scanner.getInstance(new StringReader(statement));
         scanner.read();
-        BlockParser parser = BlockParser.getInstance(scanner);
-        String result = parser.parse();
+        BlockParser parser = BlockParser.getInstance();
+        String result = parser.parse(scanner);
         assertEquals("accept",result);
     }
 }

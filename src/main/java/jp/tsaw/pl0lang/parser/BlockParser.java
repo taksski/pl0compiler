@@ -7,25 +7,25 @@ import java.sql.Statement;
 
 public class BlockParser extends AbstractParser {
 
-    private BlockParser(Scanner scanner) {
-        super(scanner);
+    private BlockParser() {
+        super();
     }
 
-    public static BlockParser getInstance(Scanner scanner) {
-        return new BlockParser(scanner);
+    public static BlockParser getInstance() {
+        return new BlockParser();
     }
 
     @Override
-    public String parse() {
+    public String parse(Scanner scanner) {
         Token token = scanner.getToken();
 
         if (token.getType() == Token.Type.CONST) {
             scanner.read();
-            if (parseConstBlock()) {
+            if (parseConstBlock(scanner)) {
                 token = scanner.read();
                 while (token.getType() == Token.Type.COMMA) {
                     scanner.read();
-                    if (parseConstBlock()) {
+                    if (parseConstBlock(scanner)) {
                         token = scanner.read();
                     } else {
                         return ERROR;
@@ -69,8 +69,8 @@ public class BlockParser extends AbstractParser {
                 token = scanner.read();
                 if (token.getType() == Token.Type.SEMICOLON) {
                     scanner.read();
-                    BlockParser procParser = BlockParser.getInstance(scanner);
-                    String result = procParser.parse();
+                    BlockParser procParser = BlockParser.getInstance();
+                    String result = procParser.parse(scanner);
                     if (result.equals("accept")) {
                         token = scanner.read();
                         if (token.getType() != Token.Type.SEMICOLON) {
@@ -88,10 +88,10 @@ public class BlockParser extends AbstractParser {
             }
             token = scanner.read();
         }
-        return (StatementParser.getInstance(scanner)).parse();
+        return (StatementParser.getInstance()).parse(scanner);
     }
 
-    private boolean parseConstBlock() {
+    private boolean parseConstBlock(Scanner scanner) {
         Token token = scanner.getToken();
         if (token.getType() == Token.Type.IDENT) {
             token = scanner.read();

@@ -5,17 +5,17 @@ import jp.tsaw.pl0lang.scanner.token.Token;
 
 public class ProgramParser extends AbstractParser {
 
-    private ProgramParser(Scanner scanner) {
-        super(scanner);
+    private ProgramParser() {
+        super();
     }
 
-    public static ProgramParser getInstance(Scanner scanner) {
-        return new ProgramParser(scanner);
+    public static ProgramParser getInstance() {
+        return new ProgramParser();
     }
 
     @Override
-    public String parse() {
-        String result = BlockParser.getInstance(scanner).parse();
+    public String parse(Scanner scanner) {
+        String result = BlockParser.getInstance().parse(scanner);
         if (result.equals(ACCEPT)){
             Token token = scanner.getToken();
             if (token.getType() != Token.Type.PERIOD) {
