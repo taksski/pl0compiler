@@ -23,14 +23,14 @@ public class ExpressionParser extends AbstractParser {
         TermParser termParser = TermParser.getInstance();
         String result = termParser.parse(scanner);
         if (result.equals(ACCEPT)) {
-            token = scanner.read();
+            token = scanner.getToken();
             while (token.getType() == Token.Type.PLUS ||
                    token.getType() == Token.Type.MINUS) {
                 scanner.read();
                 termParser = TermParser.getInstance();
                 result = termParser.parse(scanner);
                 if (result.equals(ACCEPT)) {
-                    token = scanner.read();
+                    token = scanner.getToken();
                 } else {
                     break;
                 }

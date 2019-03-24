@@ -6,19 +6,14 @@ import jp.tsaw.pl0lang.scanner.Scanner;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.StringReader;
 
-class ProgramParserTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-    @Test
-    void createProgramParser() {
-        Scanner scanner = Scanner.getInstance(new StringReader(""));
-        ProgramParser.getInstance();
-        assertTrue(true);
-    }
+class ProgramParserTest {
 
     @Test
     void emptyProgram() {
@@ -26,5 +21,21 @@ class ProgramParserTest {
         scanner.read();
         ProgramParser parser = ProgramParser.getInstance();
         assertEquals(AbstractParser.ACCEPT, parser.parse(scanner));
+    }
+
+    @Test
+    void acceptFile() {
+        try {
+            String testFile = "gcd.pl0";
+            String path = getClass().getClassLoader().getResource(testFile).getPath();
+            FileReader reader =
+                    new FileReader(path);
+            Scanner scanner = Scanner.getInstance(reader);
+            scanner.read();
+            ProgramParser parser = ProgramParser.getInstance();
+            assertEquals(AbstractParser.ACCEPT, parser.parse(scanner));
+        } catch (FileNotFoundException e) {
+            fail("No test file!");
+        }
     }
 }

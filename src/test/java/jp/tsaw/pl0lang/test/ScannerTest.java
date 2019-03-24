@@ -113,4 +113,21 @@ class ScannerTest {
         token = scanner.read();
         assertEquals(Token.Type.SEMICOLON, token.getType());
     }
+
+    @Test
+    void scanWithNewLines() {
+        Scanner scanner = Scanner.getInstance(new StringReader("a \n b \r\n c \r d"));
+        Token token = scanner.read();
+        assertEquals(Token.Type.IDENT, token.getType());
+        assertEquals("a", token.getValue());
+        token = scanner.read();
+        assertEquals(Token.Type.IDENT, token.getType());
+        assertEquals("b", token.getValue());
+        token = scanner.read();
+        assertEquals(Token.Type.IDENT, token.getType());
+        assertEquals("c", token.getValue());
+        token = scanner.read();
+        assertEquals(Token.Type.IDENT,token.getType());
+        assertEquals("d",token.getValue());
+    }
 }

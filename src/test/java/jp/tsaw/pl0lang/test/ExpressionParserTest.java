@@ -33,23 +33,7 @@ class ExpressionParserTest {
     }
 
     @Test
-    void identFactor() {
-        Scanner scanner = Scanner.getInstance(new StringReader("a"));
-        FactorParser parser = FactorParser.getInstance();
-        scanner.read();
-        assertEquals(AbstractParser.ACCEPT, parser.parse(scanner));
-    }
-
-    @Test
-    void numberFactor() {
-        Scanner scanner = Scanner.getInstance(new StringReader("123"));
-        FactorParser parser = FactorParser.getInstance();
-        scanner.read();
-        assertEquals(AbstractParser.ACCEPT, parser.parse(scanner));
-    }
-
-    @Test
-    void factorTerm() {
+    void acceptFactors() {
         String[] factors = {
                 "a", // ident
                 "123", //number
@@ -57,9 +41,9 @@ class ExpressionParserTest {
         };
         for (String factor: factors) {
             Scanner scanner = Scanner.getInstance(new StringReader(factor));
-            TermParser parser = TermParser.getInstance();
+            FactorParser parser = FactorParser.getInstance();
             scanner.read();
-            assertEquals(AbstractParser.ACCEPT, parser.parse(scanner));
+            assertEquals(AbstractParser.ACCEPT, parser.parse(scanner), "factor: \n" + factor);
         }
     }
 

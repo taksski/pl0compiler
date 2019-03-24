@@ -16,8 +16,7 @@ public class StatementParser extends AbstractParser {
         Token token = scanner.getToken();
         switch(token.getType()) {
             case IDENT:
-                token = scanner.read();
-                if (token.getType() == Token.Type.BECOMES) {
+                if (scanner.read().getType() == Token.Type.BECOMES) {
                     scanner.read();
                     ExpressionParser expressionParser = ExpressionParser.getInstance();
                     return expressionParser.parse(scanner);
@@ -25,20 +24,63 @@ public class StatementParser extends AbstractParser {
                     return ERROR;
                 }
             case CALL:
-                token = scanner.read();
-                if (token.getType() == Token.Type.IDENT) {
+                if (scanner.read().getType() == Token.Type.IDENT) {
                     scanner.read();
                     return ACCEPT;
                 } else {
                     return ERROR;
                 }
-            case BEGIN:// TODO: implement parse methods
-            case IF:// TODO: implement parse methods
-            case WHILE:// TODO: implement parse methods
+            case BEGIN:
+                scanner.read();
+                StatementParser statementParser = StatementParser.getInstance();
+                String result = statementParser.parse(scanner);
+                if (result.equals(ACCEPT)) {
+                    while (scanner.getToken().getType() == Token.Type.SEMICOLON) {
+                        scanner.read();
+                        result = statementParser.parse(scanner);
+                        if (!result.equals(ACCEPT)) {
+                            return ERROR;
+                        }
+                    }
+                    if (scanner.getToken().getType() == Token.Type.END) {
+                        scanner.read();
+                        return ACCEPT;
+                    } else {
+                        return ERROR;
+                    }
+                } else {
+                    return ERROR;
+                }
+            case IF:
+                scanner.read();
+                ConditionParser conditionParser = ConditionParser.getInstance();
+                result = conditionParser.parse(scanner);
+                if (result.equals(ACCEPT)) {
+                    if (scanner.getToken().getType() == Token.Type.THEN) {
+                        scanner.read();
+                        statementParser = StatementParser.getInstance();
+                        return statementParser.parse(scanner);
+                    } else {
+                        return ERROR;
+                    }
+                } else {
+                    return ERROR;
+                }
+            case WHILE:
+                scanner.read();
+                conditionParser = ConditionParser.getInstance();
+                result = conditionParser.parse(scanner);
+                if (result.equals(ACCEPT)) {
+                    if (scanner.getToken().getType() == Token.Type.DO) {
+                        scanner.read();
+                        statementParser = StatementParser.getInstance();
+                        return statementParser.parse(scanner);
+                    }
+                }
                 return ERROR;
-            default:
+            default: // 空文の処理
+                return ACCEPT;
         }
-        return ACCEPT;
     }
 
 }

@@ -17,13 +17,14 @@ public class FactorParser extends AbstractParser {
         switch (token.getType()) {
             case IDENT:
             case NUMBER:
+                scanner.read();
                 return ACCEPT;
             case LPAREN:
                 scanner.read();
                 ExpressionParser expressionParser = ExpressionParser.getInstance();
                 String result = expressionParser.parse(scanner);
                 if (result.equals(ACCEPT)) {
-                    token = scanner.read();
+                    token = scanner.getToken();
                     if (token.getType() == Token.Type.RPAREN) {
                         scanner.read();
                         return ACCEPT;

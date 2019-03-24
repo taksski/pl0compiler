@@ -4,7 +4,6 @@ import jp.tsaw.pl0lang.parser.AbstractParser;
 import jp.tsaw.pl0lang.parser.BlockParser;
 import jp.tsaw.pl0lang.scanner.Scanner;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
@@ -78,7 +77,16 @@ class BlockParserTest {
         }
     }
 
-    @Disabled
+    @Test
+    void acceptContAndVarDeclaration() {
+        String block = "const a = 1, b = 2; var c, d;";
+        Scanner scanner = Scanner.getInstance(new StringReader(block));
+        scanner.read();
+        BlockParser parser = BlockParser.getInstance();
+        assertEquals(AbstractParser.ACCEPT, parser.parse(scanner));
+    }
+
+    @Test
     void acceptProcedureBlock() {
         String statement = "procedure sample; var a; begin a := 1; end;"; // simple procedure;
         Scanner scanner = Scanner.getInstance(new StringReader(statement));

@@ -16,14 +16,14 @@ public class TermParser extends AbstractParser {
         FactorParser factorParser = FactorParser.getInstance();
         String result = factorParser.parse(scanner);
         if (result.equals(ACCEPT)) {
-            Token token = scanner.read();
+            Token token = scanner.getToken();
             while (token.getType() == Token.Type.TIMES ||
                 token.getType() == Token.Type.SLASH) {
                 scanner.read();
                 factorParser = FactorParser.getInstance();
                 result = factorParser.parse(scanner);
                 if (result.equals(ACCEPT)) {
-                    token = scanner.read();
+                    token = scanner.getToken();
                 } else {
                     break;
                 }

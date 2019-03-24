@@ -3,8 +3,6 @@ package jp.tsaw.pl0lang.parser;
 import jp.tsaw.pl0lang.scanner.Scanner;
 import jp.tsaw.pl0lang.scanner.token.Token;
 
-import java.sql.Statement;
-
 public class BlockParser extends AbstractParser {
 
     private BlockParser() {
@@ -34,33 +32,33 @@ public class BlockParser extends AbstractParser {
             } else {
                 return ERROR;
             }
-            if (token.getType() != Token.Type.SEMICOLON) {
-                return "parse error!";
+            if (token.getType() == Token.Type.SEMICOLON) {
+                token = scanner.read();
+            } else {
+                return ERROR;
             }
-            token = scanner.read();
         }
 
         if (token.getType() == Token.Type.VAR) {
             token = scanner.read();
             if (token.getType() == Token.Type.IDENT) {
                 token = scanner.read();
-                if (token.getType() == Token.Type.COMMA) {
+                while (token.getType() == Token.Type.COMMA) {
                     token = scanner.read();
-                } else if (token.getType() != Token.Type.SEMICOLON) {
-                    return "parse error!";
+                    if (token.getType() == Token.Type.IDENT) {
+                        token = scanner.read();
+                    } else {
+                        return ERROR;
+                    }
+                }
+                if (token.getType() == Token.Type.SEMICOLON) {
+                    token = scanner.read();
+                } else {
+                    return ERROR;
                 }
             } else {
-                return "parse error!";
+                return ERROR;
             }
-            while (token.getType() == Token.Type.IDENT) {
-                token = scanner.read();
-                if (token.getType() == Token.Type.COMMA) {
-                    token = scanner.read();
-                } else if (token.getType() != Token.Type.SEMICOLON) {
-                    return "parse error!";
-                }
-            }
-            token = scanner.read();
         }
 
         while (token.getType() == Token.Type.PROCEDURE) {
@@ -72,19 +70,19 @@ public class BlockParser extends AbstractParser {
                     BlockParser procParser = BlockParser.getInstance();
                     String result = procParser.parse(scanner);
                     if (result.equals("accept")) {
-                        token = scanner.read();
+                        token = scanner.getToken();
                         if (token.getType() != Token.Type.SEMICOLON) {
-                            return "parse error!";
+                            return ERROR;
                         }
 
                     } else {
                         return result;
                     }
                 } else {
-                    return "parse error!";
+                    return ERROR;
                 }
             } else {
-                return "parse error!";
+                return ERROR;
             }
             token = scanner.read();
         }
