@@ -21,6 +21,8 @@ class ScannerTest {
         Scanner scanner = Scanner.getInstance(new StringReader(""));
         Token token = scanner.getToken();
         assertEquals(Token.Type.NULL, token.getType());
+        assertEquals(1, scanner.getLinePosition());
+        assertEquals(1, scanner.getTokenPosition());
     }
 
     @Test
@@ -37,6 +39,7 @@ class ScannerTest {
         Token token = scanner.read();
         assertEquals(Token.Type.IDENT, token.getType());
         assertEquals("abc", token.getValue());
+        assertEquals(1, scanner.getLinePosition());
 
         Token other = scanner.getToken();
         assertSame(token, other);
@@ -45,6 +48,7 @@ class ScannerTest {
         token = scanner.read();
         assertEquals(Token.Type.IDENT, token.getType());
         assertEquals("abc", token.getValue());
+        assertEquals(3, scanner.getTokenPosition());
     }
 
     @Test
@@ -105,11 +109,14 @@ class ScannerTest {
         token = scanner.read();
         assertEquals(Token.Type.IDENT, token.getType());
         assertEquals("a", token.getValue());
+        assertEquals(5,scanner.getTokenPosition());
         token = scanner.read();
         assertEquals(Token.Type.BECOMES, token.getType());
+        assertEquals(7, scanner.getTokenPosition());
         token = scanner.read();
         assertEquals(Token.Type.NUMBER, token.getType());
         assertEquals("1", token.getValue());
+        assertEquals(10, scanner.getTokenPosition());
         token = scanner.read();
         assertEquals(Token.Type.SEMICOLON, token.getType());
     }
@@ -123,11 +130,14 @@ class ScannerTest {
         token = scanner.read();
         assertEquals(Token.Type.IDENT, token.getType());
         assertEquals("b", token.getValue());
+        assertEquals(2, scanner.getLinePosition());
         token = scanner.read();
         assertEquals(Token.Type.IDENT, token.getType());
         assertEquals("c", token.getValue());
+        assertEquals(3, scanner.getLinePosition()); // \r は改行とカウントしない
         token = scanner.read();
         assertEquals(Token.Type.IDENT,token.getType());
         assertEquals("d",token.getValue());
+        assertEquals(3, scanner.getLinePosition()); // \r は改行とカウントしない
     }
 }
